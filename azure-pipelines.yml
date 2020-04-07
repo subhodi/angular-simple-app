@@ -1,0 +1,104 @@
+trigger:
+- master 
+- develop
+
+pr: none
+
+
+variables: 
+    developmentBranchName: 'develop'    
+    masterBranchName: 'master'
+    
+    
+ 
+stages:
+    - stage: 'Build'
+      displayName: 'Build the Angular App'
+      jobs:
+          - job: 'Build_DEV'
+            condition: eq(variables['Build.SourceBranchName'],variables['developmentBranchName'])
+            displayName: 'Build job'
+            pool:
+              vmImage: 'windows-latest' 
+              name: Azure Pipelines
+              demands:
+              - msbuild
+              - visualstudio
+
+
+                  
+            steps:
+            - task: NodeTool@0
+              displayName: 'Use Node 10.x x'
+              inputs:
+                  versionSpec: 10.x
+
+            - task: Npm@1
+              displayName: 'npm install'
+              inputs:
+                  verbose: false
+                
+            - task: Npm@1
+              displayName: 'ng build'
+              inputs:
+                  command: custom
+                  workingDir: .
+                  verbose: false
+                  customCommand: 'run dist:dev'
+            
+            - task: CopyFiles@2
+              displayName: 'Copy Files to: dist'
+              inputs:
+                   SourceFolder: dist
+                   Contents: '**/**'
+                   TargetFolder: 'dist'
+
+            - task: PublishPipelineArtifact@1
+              inputs:
+                  targetPath: 'dist'
+                  artifact: 'drop'
+                  publishLocation: pipeline
+                   
+          
+          - job: 'Build_UAT'
+            condition: eq(variables['Build.SourceBranchName'],variables['masterBranchName'])
+            displayName: 'Build job'
+            pool:
+              vmImage: 'windows-latest' 
+
+                  
+            steps:
+            - task: NodeTool@0
+              displayName: 'Use Node 10.x x'
+              inputs:
+                  versionSpec: 10.x
+
+            - task: Npm@1
+              displayName: 'npm install'
+              inputs:
+                  verbose: false
+                
+            - task: Npm@1
+              displayName: 'ng build'
+              inputs:
+                  command: custom
+                  workingDir: .
+                  verbose: false
+                  customCommand: 'run dist:uat'
+            
+            - task: CopyFiles@2
+              displayName: 'Copy Files to: dist'
+              inputs:
+                   SourceFolder: dist
+                   Contents: '**/**'
+                   TargetFolder: 'src/dist'
+
+            - task: PublishPipelineArtifact@1
+              inputs:
+                  targetPath: 'dist'
+                  artifact: 'drop'
+                  publishLocation: pipeline
+                   
+            
+                
+    
