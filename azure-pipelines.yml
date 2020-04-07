@@ -44,14 +44,14 @@ stages:
                   command: custom
                   workingDir: .
                   verbose: false
-                  customCommand: 'run src'
+                  customCommand: 'run src/app:dev'
             
             - task: CopyFiles@2
               displayName: 'Copy Files to: src/dist'
               inputs:
                    SourceFolder: dist
                    Contents: '**/**'
-                   TargetFolder: 'src/dist'
+                   TargetFolder: 'src/app/dist'
 
             - task: PublishPipelineArtifact@1
               inputs:
@@ -84,10 +84,10 @@ stages:
                   command: custom
                   workingDir: .
                   verbose: false
-                  customCommand: 'run src:uat'
+                  customCommand: 'run src/app:uat'
             
             - task: CopyFiles@2
-              displayName: 'Copy Files to: src/dist'
+              displayName: 'Copy Files to: src/app/dist'
               inputs:
                    SourceFolder: dist
                    Contents: '**/**'
