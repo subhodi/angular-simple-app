@@ -44,14 +44,14 @@ stages:
                   command: custom
                   workingDir: .
                   verbose: false
-                  customCommand: 'run src/app:dev'
+                  customCommand: 'run e2e/app.e2e-spec.ts:dev'
             
             - task: CopyFiles@2
-              displayName: 'Copy Files to: src/dist'
+              displayName: 'Copy Files to: dist'
               inputs:
                    SourceFolder: dist
                    Contents: '**/**'
-                   TargetFolder: 'src/app/dist'
+                   TargetFolder: 'dist'
 
             - task: PublishPipelineArtifact@1
               inputs:
@@ -84,10 +84,10 @@ stages:
                   command: custom
                   workingDir: .
                   verbose: false
-                  customCommand: 'run src/app:uat'
+                  customCommand: 'run e2e/app.e2e-spec.ts:uat'
             
             - task: CopyFiles@2
-              displayName: 'Copy Files to: src/app/dist'
+              displayName: 'Copy Files to: dist'
               inputs:
                    SourceFolder: dist
                    Contents: '**/**'
