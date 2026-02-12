@@ -12,3 +12,5 @@ describe('myapp App', () => {
     expect(page.getParagraphText()).toEqual('Welcome to app!');
   });
 });
+
+// added comment
